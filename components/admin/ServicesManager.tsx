@@ -21,16 +21,19 @@ function formatPrice(p: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(p);
 }
 
+const inputCls =
+  'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-ocean-500 focus:ring-2 focus:ring-ocean-500/20 transition';
+
 export default function ServicesManager() {
-  const [services, setServices]     = useState<Service[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [showAdd, setShowAdd]       = useState(false);
-  const [addForm, setAddForm]       = useState<ServiceForm>(EMPTY_FORM);
-  const [addBusy, setAddBusy]       = useState(false);
-  const [editingId, setEditingId]   = useState<string | null>(null);
-  const [editForm, setEditForm]     = useState<ServiceForm>(EMPTY_FORM);
-  const [editBusy, setEditBusy]     = useState(false);
-  const [error, setError]           = useState<string | null>(null);
+  const [services, setServices]   = useState<Service[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [showAdd, setShowAdd]     = useState(false);
+  const [addForm, setAddForm]     = useState<ServiceForm>(EMPTY_FORM);
+  const [addBusy, setAddBusy]     = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm]   = useState<ServiceForm>(EMPTY_FORM);
+  const [editBusy, setEditBusy]   = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -41,9 +44,8 @@ export default function ServicesManager() {
 
   useEffect(() => { load(); }, []);
 
-  // ── add ────────────────────────────────────────────────────────────────────
   async function handleAdd() {
-    const dur = parseInt(addForm.durationMin);
+    const dur   = parseInt(addForm.durationMin);
     const price = parseFloat(addForm.price);
     if (!addForm.name.trim() || isNaN(dur) || isNaN(price)) return;
 
@@ -61,7 +63,6 @@ export default function ServicesManager() {
     }
   }
 
-  // ── edit ───────────────────────────────────────────────────────────────────
   function startEdit(svc: Service) {
     setEditingId(svc.id);
     setEditForm({
@@ -95,7 +96,6 @@ export default function ServicesManager() {
     }
   }
 
-  // ── toggle active ─────────────────────────────────────────────────────────
   async function handleToggle(svc: Service) {
     try {
       await updateService(svc.id, { active: !svc.active });
@@ -107,7 +107,6 @@ export default function ServicesManager() {
     }
   }
 
-  // ── delete ─────────────────────────────────────────────────────────────────
   async function handleDelete(id: string) {
     if (!confirm('Delete this service? This cannot be undone.')) return;
     try {
@@ -123,37 +122,37 @@ export default function ServicesManager() {
       {/* header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h2 className="text-lg font-bold text-white">Services</h2>
-          <p className="text-xs text-zinc-500 mt-0.5">
+          <h2 className="text-lg font-bold text-gray-900">Services</h2>
+          <p className="text-xs text-gray-400 mt-0.5">
             Services appear in the customer booking flow when active.
           </p>
         </div>
         <button
           onClick={() => { setShowAdd((v) => !v); setAddForm(EMPTY_FORM); }}
-          className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-400"
+          className="rounded-xl bg-brand-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-600"
         >
           {showAdd ? 'Cancel' : '+ Add service'}
         </button>
       </div>
 
       {error && (
-        <p className="mb-4 rounded-lg border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-400">
+        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
 
       {/* add form */}
       {showAdd && (
-        <div className="mb-4 rounded-xl border border-brand-500/40 bg-zinc-900 p-5">
-          <p className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-4">
+        <div className="mb-4 rounded-xl border border-ocean-200 bg-ocean-50 p-5">
+          <p className="text-xs font-bold uppercase tracking-widest text-ocean-600 mb-4">
             New service
           </p>
-          <ServiceFormFields form={addForm} onChange={setAddForm} />
+          <ServiceFormFields form={addForm} onChange={setAddForm} inputCls={inputCls} />
           <div className="mt-4 flex gap-2">
             <button
               onClick={handleAdd}
               disabled={addBusy || !addForm.name.trim() || !addForm.price}
-              className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-400 disabled:opacity-40"
+              className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-40"
             >
               {addBusy ? 'Adding…' : 'Add service'}
             </button>
@@ -163,59 +162,56 @@ export default function ServicesManager() {
 
       {/* list */}
       {loading ? (
-        <div className="py-8 text-center text-sm text-zinc-600">Loading…</div>
+        <div className="py-8 text-center text-sm text-gray-400">Loading…</div>
       ) : services.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-zinc-800 py-12 text-center text-sm text-zinc-600">
+        <div className="rounded-xl border border-dashed border-gray-200 py-12 text-center text-sm text-gray-400">
           No services yet. Add one above.
         </div>
       ) : (
         <div className="space-y-2">
           {services.map((svc) =>
             editingId === svc.id ? (
-              /* edit mode */
-              <div key={svc.id} className="rounded-xl border border-brand-500/40 bg-zinc-900 p-5">
-                <ServiceFormFields form={editForm} onChange={setEditForm} />
+              <div key={svc.id} className="rounded-xl border border-ocean-200 bg-ocean-50 p-5">
+                <ServiceFormFields form={editForm} onChange={setEditForm} inputCls={inputCls} />
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => handleSaveEdit(svc.id)}
                     disabled={editBusy}
-                    className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-400 disabled:opacity-40"
+                    className="rounded-lg bg-brand-500 px-5 py-2 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-40"
                   >
                     {editBusy ? 'Saving…' : 'Save'}
                   </button>
                   <button
                     onClick={() => setEditingId(null)}
-                    className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-400 hover:text-white transition"
+                    className="rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              /* view mode */
               <div
                 key={svc.id}
                 className={`flex flex-wrap items-center gap-4 rounded-xl border px-5 py-4 transition-opacity ${
                   svc.active
-                    ? 'border-zinc-800 bg-zinc-900'
-                    : 'border-zinc-800 bg-zinc-900/40 opacity-60'
+                    ? 'border-gray-200 bg-white'
+                    : 'border-gray-100 bg-gray-50 opacity-60'
                 }`}
               >
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white text-sm">{svc.name}</p>
-                  <p className="text-xs text-zinc-500 mt-0.5">
+                  <p className="font-semibold text-gray-900 text-sm">{svc.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
                     {svc.duration_minutes} min · {formatPrice(svc.price)}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  {/* active toggle */}
                   <button
                     onClick={() => handleToggle(svc)}
                     className={`rounded-full px-3 py-1 text-xs font-bold border transition ${
                       svc.active
-                        ? 'border-green-700 bg-green-950/40 text-green-400 hover:bg-green-950'
-                        : 'border-zinc-700 bg-zinc-800 text-zinc-500 hover:text-zinc-300'
+                        ? 'border-green-300 bg-green-50 text-green-700 hover:bg-green-100'
+                        : 'border-gray-200 bg-white text-gray-500 hover:text-gray-700'
                     }`}
                   >
                     {svc.active ? 'Active' : 'Inactive'}
@@ -223,14 +219,14 @@ export default function ServicesManager() {
 
                   <button
                     onClick={() => startEdit(svc)}
-                    className="rounded-lg border border-zinc-700 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-zinc-500 hover:text-white"
+                    className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:text-gray-900"
                   >
                     Edit
                   </button>
 
                   <button
                     onClick={() => handleDelete(svc.id)}
-                    className="rounded-lg border border-red-900/50 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-950/30"
+                    className="rounded-lg border border-red-200 px-3 py-1 text-xs font-semibold text-red-500 transition hover:bg-red-50"
                   >
                     Delete
                   </button>
@@ -247,35 +243,37 @@ export default function ServicesManager() {
 function ServiceFormFields({
   form,
   onChange,
+  inputCls,
 }: {
-  form: ServiceForm;
-  onChange: (f: ServiceForm) => void;
+  form: { name: string; durationMin: string; price: string };
+  onChange: (f: { name: string; durationMin: string; price: string }) => void;
+  inputCls: string;
 }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <div className="sm:col-span-1">
-        <label className="block text-xs font-semibold text-zinc-400 mb-1">Service name</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Service name</label>
         <input
           type="text"
           value={form.name}
           onChange={(e) => onChange({ ...form, name: e.target.value })}
           placeholder="e.g. Haircut"
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-brand-500"
+          className={inputCls}
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-zinc-400 mb-1">Duration (min)</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Duration (min)</label>
         <input
           type="number"
           min={5}
           step={5}
           value={form.durationMin}
           onChange={(e) => onChange({ ...form, durationMin: e.target.value })}
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white outline-none focus:border-brand-500"
+          className={inputCls}
         />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-zinc-400 mb-1">Price ($)</label>
+        <label className="block text-xs font-semibold text-gray-600 mb-1">Price ($)</label>
         <input
           type="number"
           min={0}
@@ -283,7 +281,7 @@ function ServiceFormFields({
           value={form.price}
           onChange={(e) => onChange({ ...form, price: e.target.value })}
           placeholder="35.00"
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-brand-500"
+          className={inputCls}
         />
       </div>
     </div>

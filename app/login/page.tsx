@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
+import { fetchClaimedGuestCount } from '@/lib/appointments';
 
 type Mode = 'signin' | 'signup';
 
@@ -50,7 +51,18 @@ export default function LoginPage() {
         }
 
         const role = result.profile?.role ?? 'customer';
-        router.push(role === 'barber' || role === 'admin' ? '/dashboard' : '/book');
+        if (role === 'barber' || role === 'admin') {
+          router.push('/dashboard');
+          return;
+        }
+
+        // Check if any guest appointments were claimed for this email
+        const claimed = result.user ? await fetchClaimedGuestCount(result.user.id) : 0;
+        if (claimed > 0) {
+          router.push(`/appointments?claimed=${claimed}`);
+        } else {
+          router.push('/book');
+        }
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
@@ -65,21 +77,26 @@ export default function LoginPage() {
         {/* Card */}
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           {/* Header */}
-          <h1 className="text-2xl font-bold text-gray-900">
-            {mode === 'signin' ? 'Welcome back' : 'Create account'}
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {mode === 'signin'
-              ? "Don't have an account? "
-              : 'Already have an account? '}
-            <button
-              type="button"
-              onClick={toggleMode}
-              className="font-medium text-brand-500 hover:text-brand-600 transition-colors"
-            >
-              {mode === 'signin' ? 'Sign up' : 'Sign in'}
-            </button>
-          </p>
+          <div className="mb-6 text-center">
+            <p className="text-xs font-bold uppercase tracking-widest text-ocean-600 mb-1">
+              CCC Barber Academy
+            </p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {mode === 'signin' ? 'Welcome back' : 'Create account'}
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              {mode === 'signin'
+                ? "Don't have an account? "
+                : 'Already have an account? '}
+              <button
+                type="button"
+                onClick={toggleMode}
+                className="font-medium text-ocean-600 hover:text-ocean-700 transition-colors"
+              >
+                {mode === 'signin' ? 'Sign up' : 'Sign in'}
+              </button>
+            </p>
+          </div>
 
           {/* Alerts */}
           {error && (
@@ -97,10 +114,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             {mode === 'signup' && (
               <div>
-                <label
-                  htmlFor="fullName"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                   Full name
                 </label>
                 <input
@@ -110,17 +124,14 @@ export default function LoginPage() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
-                  placeholder="Watson Smith"
+                  className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-ocean-500 focus:ring-2 focus:ring-ocean-500/20"
+                  placeholder="Your full name"
                 />
               </div>
             )}
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
@@ -130,16 +141,13 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-ocean-500 focus:ring-2 focus:ring-ocean-500/20"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <input
@@ -150,7 +158,7 @@ export default function LoginPage() {
                 minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-ocean-500 focus:ring-2 focus:ring-ocean-500/20"
                 placeholder={mode === 'signup' ? 'At least 8 characters' : '••••••••'}
               />
             </div>
@@ -172,10 +180,7 @@ export default function LoginPage() {
 
           {mode === 'signin' && (
             <p className="mt-4 text-center text-xs text-gray-400">
-              <Link
-                href="/"
-                className="hover:text-brand-500 transition-colors"
-              >
+              <Link href="/" className="hover:text-ocean-600 transition-colors">
                 Back to home
               </Link>
             </p>

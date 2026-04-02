@@ -11,7 +11,6 @@ import Step1Service from './Step1Service';
 import Step2Schedule from './Step2Schedule';
 import Step3Confirm from './Step3Confirm';
 
-// Today in YYYY-MM-DD (local time)
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -20,7 +19,6 @@ function todayStr() {
 export default function BookingForm() {
   const { user } = useAuth();
 
-  // ── data ──────────────────────────────────────────────────
   const [services,    setServices]    = useState<Service[]>([]);
   const [barbers,     setBarbers]     = useState<Barber[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
@@ -33,15 +31,13 @@ export default function BookingForm() {
       .finally(() => setDataLoading(false));
   }, []);
 
-  // ── booking state ─────────────────────────────────────────
   const [step,    setStep]    = useState<1 | 2 | 3>(1);
   const [service, setService] = useState<Service | null>(null);
-  const [barber,  setBarber]  = useState<Barber | null>(null); // null = any
+  const [barber,  setBarber]  = useState<Barber | null>(null);
   const [date,    setDate]    = useState<string>(todayStr());
   const [slot,    setSlot]    = useState<TimeSlot | null>(null);
   const [notes,   setNotes]   = useState('');
 
-  // Clear downstream selections when barber or date changes in step 2
   function handleBarberChange(b: Barber | null) {
     setBarber(b);
     setSlot(null);
@@ -51,28 +47,47 @@ export default function BookingForm() {
     setSlot(null);
   }
 
-  // ── submission ────────────────────────────────────────────
+  const [guestName,  setGuestName]  = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<Appointment | null>(null);
 
   async function handleSubmit() {
-    if (!user || !service || !slot) return;
+    if (!service || !slot) return;
 
     const effectiveBarberId = slot.assignedBarberId ?? barber?.id;
     if (!effectiveBarberId) return;
 
+    // Guest bookings require name, phone, and email
+    if (!user && (!guestName.trim() || !guestPhone.trim() || !guestEmail.trim())) return;
+
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const appt = await insertAppointment({
-        customerId: user.id,
-        barberId:   effectiveBarberId,
-        serviceId:  service.id,
-        startTime:  slot.startTime,
-        endTime:    slot.endTime,
-        notes:      notes.trim() || undefined,
-      });
+      const appt = await insertAppointment(
+        user
+          ? {
+              customerId: user.id,
+              barberId:   effectiveBarberId,
+              serviceId:  service.id,
+              startTime:  slot.startTime,
+              endTime:    slot.endTime,
+              notes:      notes.trim() || undefined,
+            }
+          : {
+              guestName:  guestName.trim(),
+              guestPhone: guestPhone.trim(),
+              guestEmail: guestEmail.trim(),
+              barberId:   effectiveBarberId,
+              serviceId:  service.id,
+              startTime:  slot.startTime,
+              endTime:    slot.endTime,
+              notes:      notes.trim() || undefined,
+            },
+      );
       setConfirmation(appt);
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : 'Booking failed. Please try again.');
@@ -81,7 +96,6 @@ export default function BookingForm() {
     }
   }
 
-  // ── success screen ────────────────────────────────────────
   if (confirmation) {
     return <SuccessCard appointment={confirmation} service={service!} slot={slot!} barber={barber} onReset={() => {
       setConfirmation(null);
@@ -91,13 +105,15 @@ export default function BookingForm() {
       setDate(todayStr());
       setSlot(null);
       setNotes('');
+      setGuestName('');
+      setGuestPhone('');
+      setGuestEmail('');
     }} />;
   }
 
-  // ── loading / error ───────────────────────────────────────
   if (dataError) {
     return (
-      <div className="rounded-xl border border-red-900 bg-red-950/40 px-6 py-5 text-sm text-red-400">
+      <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-5 text-sm text-red-700">
         {dataError}
       </div>
     );
@@ -105,8 +121,8 @@ export default function BookingForm() {
 
   if (dataLoading) {
     return (
-      <div className="flex items-center gap-2 text-zinc-500 text-sm">
-        <span className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+      <div className="flex items-center gap-2 text-gray-400 text-sm">
+        <span className="h-5 w-5 animate-spin rounded-full border-2 border-ocean-500 border-t-transparent" />
         Loading…
       </div>
     );
@@ -114,18 +130,18 @@ export default function BookingForm() {
 
   if (services.length === 0) {
     return (
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 py-12 text-center text-sm text-zinc-600">
+      <div className="rounded-xl border border-dashed border-gray-200 py-12 text-center text-sm text-gray-400">
         No services are available yet. Check back soon.
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="h-full flex flex-col min-h-0">
       <StepIndicator currentStep={step} />
 
       {submitError && (
-        <div className="mb-6 rounded-xl border border-red-900 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {submitError}
         </div>
       )}
@@ -136,6 +152,7 @@ export default function BookingForm() {
           selected={service}
           onSelect={setService}
           onNext={() => setStep(2)}
+          onCancel={() => window.history.back()}
         />
       )}
 
@@ -161,7 +178,14 @@ export default function BookingForm() {
           slot={slot}
           notes={notes}
           submitting={submitting}
+          user={user}
+          guestName={guestName}
+          guestPhone={guestPhone}
+          guestEmail={guestEmail}
           onNotesChange={setNotes}
+          onGuestNameChange={setGuestName}
+          onGuestPhoneChange={setGuestPhone}
+          onGuestEmailChange={setGuestEmail}
           onBack={() => setStep(2)}
           onSubmit={handleSubmit}
         />
@@ -170,10 +194,9 @@ export default function BookingForm() {
   );
 }
 
-// ─── success card ────────────────────────────────────────────────────────────
+// ── success card ──────────────────────────────────────────────────────────────
 
 function SuccessCard({
-  appointment,
   service,
   slot,
   barber,
@@ -193,22 +216,22 @@ function SuccessCard({
   return (
     <div className="text-center">
       {/* checkmark */}
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-brand-500/10 border-2 border-brand-500">
-        <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10 stroke-brand-400 stroke-2">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-ocean-50 border-2 border-ocean-400">
+        <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10 stroke-ocean-500 stroke-2">
           <polyline points="5,13 10,18 19,6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
 
-      <h2 className="text-2xl font-bold text-white mb-1">You're booked!</h2>
-      <p className="text-zinc-400 text-sm mb-8">
-        We'll see you on{' '}
-        <span className="text-zinc-200 font-medium">{dateLabel}</span> at{' '}
-        <span className="text-zinc-200 font-medium">{slot.label}</span>.
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">You&apos;re booked!</h2>
+      <p className="text-gray-500 text-sm mb-8">
+        We&apos;ll see you on{' '}
+        <span className="text-gray-800 font-medium">{dateLabel}</span> at{' '}
+        <span className="text-gray-800 font-medium">{slot.label}</span>.
       </p>
 
       {/* details */}
-      <div className="rounded-2xl border border-zinc-700 bg-zinc-900 overflow-hidden text-left mb-8">
-        <div className="divide-y divide-zinc-800">
+      <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden text-left mb-8 shadow-sm">
+        <div className="divide-y divide-gray-100">
           <DetailRow label="Service"  value={service.name} />
           <DetailRow label="Barber"   value={barber?.name ?? 'Assigned barber'} />
           <DetailRow label="Date"     value={dateLabel} />
@@ -216,7 +239,7 @@ function SuccessCard({
           <DetailRow
             label="Status"
             value={
-              <span className="rounded-full bg-amber-500/10 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-400 border border-amber-500/30">
+              <span className="rounded-full bg-amber-50 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-amber-700 border border-amber-200">
                 Pending
               </span>
             }
@@ -227,7 +250,7 @@ function SuccessCard({
       <button
         type="button"
         onClick={onReset}
-        className="rounded-xl border border-zinc-700 px-6 py-3 text-sm font-bold uppercase tracking-widest text-zinc-300 transition hover:border-zinc-500 hover:text-white"
+        className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-brand-600"
       >
         Book another
       </button>
@@ -238,9 +261,9 @@ function SuccessCard({
 function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between px-6 py-4">
-      <span className="text-sm text-zinc-400">{label}</span>
+      <span className="text-sm text-gray-500">{label}</span>
       {typeof value === 'string'
-        ? <span className="text-sm font-semibold text-white">{value}</span>
+        ? <span className="text-sm font-semibold text-gray-900">{value}</span>
         : value}
     </div>
   );

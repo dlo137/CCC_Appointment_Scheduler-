@@ -21,48 +21,36 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 w-full border-b border-ocean-100 bg-white/90 backdrop-blur-sm shadow-sm">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-gray-900 hover:text-brand-500 transition-colors"
+          className="text-xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition-colors"
         >
-          Watson <span className="text-brand-500">Booking</span>
+          CCC Barber Academy
         </Link>
 
         <div className="flex items-center gap-6">
-          {/* Customer nav links — always visible */}
           {customerLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-sm font-medium text-gray-600 hover:text-brand-500 transition-colors"
+              className="text-sm font-medium text-gray-600 hover:text-ocean-600 transition-colors"
             >
               {label}
             </Link>
           ))}
 
-          {/* Barber dashboard link */}
-          {!loading && isStaff && (
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-gray-600 hover:text-brand-500 transition-colors"
-            >
-              Dashboard
-            </Link>
-          )}
 
-          {/* Admin panel link */}
           {!loading && profile?.role === 'admin' && (
             <Link
               href="/admin"
-              className="text-sm font-medium text-purple-600 hover:text-purple-500 transition-colors"
+              className="text-sm font-medium text-ocean-600 hover:text-ocean-700 transition-colors"
             >
               Admin
             </Link>
           )}
 
-          {/* Auth CTA */}
           {loading ? (
             <span className="h-8 w-20 animate-pulse rounded-lg bg-gray-100" />
           ) : user ? (

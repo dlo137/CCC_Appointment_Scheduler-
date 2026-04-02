@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-tertiary-fixed": "#251a00",
+            "on-error-container": "#93000a",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#fffbff",
+            "background": "#fdfae7",
+            "on-secondary-fixed-variant": "#005048",
+            "primary-container": "#0d7ab9",
+            "surface-dim": "#dddbc8",
+            "surface-bright": "#fdfae7",
+            "tertiary": "#735802",
+            "surface-container-low": "#f7f4e1",
+            "inverse-on-surface": "#f4f1de",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#007166",
+            "on-background": "#1c1c11",
+            "surface-container": "#f1eedb",
+            "primary-fixed": "#cde5ff",
+            "inverse-primary": "#94ccff",
+            "secondary-fixed": "#8cf5e4",
+            "on-primary-fixed-variant": "#004b74",
+            "error-container": "#ffdad6",
+            "primary": "#006195",
+            "on-secondary-fixed": "#00201c",
+            "tertiary-fixed": "#ffdf96",
+            "tertiary-fixed-dim": "#e7c268",
+            "secondary-container": "#8cf5e4",
+            "surface-variant": "#e6e3d0",
+            "surface-tint": "#006399",
+            "secondary-fixed-dim": "#6fd8c8",
+            "surface-container-highest": "#e6e3d0",
+            "inverse-surface": "#313124",
+            "on-surface-variant": "#3d4947",
+            "primary-fixed-dim": "#94ccff",
+            "on-primary-fixed": "#001d32",
+            "secondary": "#006a60",
+            "outline-variant": "#bcc9c6",
+            "surface-container-high": "#ece9d6",
+            "on-tertiary": "#ffffff",
+            "surface": "#fdfae7",
+            "tertiary-container": "#8e711f",
+            "outline": "#6d7a77",
+            "on-primary-container": "#fdfcff",
+            "on-tertiary-fixed-variant": "#5a4400",
+            "error": "#ba1a1a",
+            "on-error": "#ffffff",
+            "on-primary": "#ffffff",
+            "on-surface": "#1c1c11"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Plus Jakarta Sans"],
+            "label": ["Plus Jakarta Sans"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      overflow: hidden;
+      background-image: radial-gradient(circle at 100% 0%, #8cf5e4 0%, transparent 40%), 
+                        radial-gradient(circle at 0% 100%, #cde5ff 0%, transparent 40%);
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(24px);
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface h-screen flex flex-col">
+<!-- TopNavBar Navigation Shell -->
+<header class="bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-xl shadow-sm shadow-cyan-900/5 fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 w-full">
+<div class="font-['Manrope'] tracking-tight text-2xl font-bold text-cyan-900 dark:text-cyan-100">
+      Coastal Academy Barbers
+    </div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-stone-600 dark:text-stone-400 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors" href="#">Academy</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors" href="#">Services</a>
+<a class="text-cyan-700 dark:text-cyan-300 border-b-2 border-cyan-700 dark:border-cyan-300 pb-1 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors" href="#">Booking</a>
+<a class="text-stone-600 dark:text-stone-400 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors" href="#">About</a>
+</nav>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-6 py-2 rounded-full font-medium transition-colors">
+      Sign In
+    </button>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center pt-20 px-4 md:px-12 max-w-7xl mx-auto w-full overflow-hidden">
+<!-- "Tide" Progress Indicator -->
+<div class="w-full max-w-3xl mb-12">
+<div class="flex justify-between items-center mb-4">
+<span class="text-sm font-semibold text-primary uppercase tracking-widest">Service</span>
+<span class="text-sm font-medium text-outline">Schedule</span>
+<span class="text-sm font-medium text-outline">Confirm</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="h-full w-1/3 bg-gradient-to-r from-primary to-primary-container rounded-full shadow-sm"></div>
+<div class="h-full w-2/3 bg-transparent"></div>
+</div>
+</div>
+<!-- Centered Editorial Header -->
+<section class="text-center mb-10">
+<h1 class="font-headline text-4xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-2">
+        Step 1: Choose a service
+      </h1>
+<p class="text-on-surface-variant font-medium">Select the treatment that best suits your style today.</p>
+</section>
+<!-- Horizontal Service Grid -->
+<div class="w-full grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+<!-- Service Card 1 -->
+<button class="group flex flex-col items-start p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-left relative overflow-hidden border-2 border-transparent focus:border-primary focus:outline-none">
+<div class="mb-6 p-3 bg-secondary-container rounded-full text-on-secondary-container">
+<span class="material-symbols-outlined text-3xl">content_cut</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-1">Standard Haircut</h3>
+<p class="text-on-surface-variant text-sm mb-4">Precision cut &amp; style</p>
+<div class="mt-auto flex flex-col">
+<span class="text-primary font-bold text-2xl tracking-tight">$25.00</span>
+<span class="text-outline text-xs font-semibold uppercase tracking-tighter">30 MIN</span>
+</div>
+<div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+</div>
+</button>
+<!-- Service Card 2 -->
+<button class="group flex flex-col items-start p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-left relative overflow-hidden border-2 border-transparent focus:border-primary focus:outline-none">
+<div class="mb-6 p-3 bg-primary-fixed rounded-full text-on-primary-fixed">
+<span class="material-symbols-outlined text-3xl">face</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-1">Beard</h3>
+<p class="text-on-surface-variant text-sm mb-4">Trimming &amp; sculpting</p>
+<div class="mt-auto flex flex-col">
+<span class="text-primary font-bold text-2xl tracking-tight">$15.00</span>
+<span class="text-outline text-xs font-semibold uppercase tracking-tighter">30 MIN</span>
+</div>
+<div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+</div>
+</button>
+<!-- Service Card 3 -->
+<button class="group flex flex-col items-start p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-left relative overflow-hidden border-2 border-primary ring-1 ring-primary/20 focus:outline-none">
+<div class="mb-6 p-3 bg-tertiary-fixed rounded-full text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-1">Hair + Beard</h3>
+<p class="text-on-surface-variant text-sm mb-4">The ultimate combo</p>
+<div class="mt-auto flex flex-col">
+<span class="text-primary font-bold text-2xl tracking-tight">$35.00</span>
+<span class="text-outline text-xs font-semibold uppercase tracking-tighter">30 MIN</span>
+</div>
+<div class="absolute top-4 right-4 p-1 bg-primary rounded-full text-white">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+</button>
+<!-- Service Card 4 -->
+<button class="group flex flex-col items-start p-8 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300 text-left relative overflow-hidden border-2 border-transparent focus:border-primary focus:outline-none">
+<div class="mb-6 p-3 bg-surface-variant rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined text-3xl">magic_button</span>
+</div>
+<h3 class="font-headline text-xl font-bold text-on-surface mb-1">Special Request</h3>
+<p class="text-on-surface-variant text-sm mb-4">Artistic custom designs</p>
+<div class="mt-auto flex flex-col">
+<span class="text-primary font-bold text-2xl tracking-tight">$45.00</span>
+<span class="text-outline text-xs font-semibold uppercase tracking-tighter">30 MIN</span>
+</div>
+<div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+</div>
+</button>
+</div>
+<!-- Actions Area -->
+<div class="w-full flex justify-between items-center mt-auto py-8">
+<button class="text-on-surface-variant font-semibold flex items-center gap-2 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+        Cancel
+      </button>
+<button class="group flex items-center gap-4 bg-gradient-to-r from-primary to-primary-container text-on-primary px-10 py-4 rounded-full font-bold text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+        Next Step
+        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Decoration: Coastal Aesthetic -->
+<div class="fixed bottom-0 left-0 w-full h-32 pointer-events-none opacity-40 z-[-1]">
+<div class="absolute bottom-0 w-full h-full bg-gradient-to-t from-secondary-fixed to-transparent"></div>
+</div>
+<!-- Footer Navigation Shell -->
+<footer class="bg-stone-100 dark:bg-stone-950 flex flex-col md:flex-row justify-between items-center px-12 py-8 w-full mt-auto">
+<div class="font-['Plus_Jakarta_Sans'] text-sm text-stone-500 mb-4 md:mb-0">
+      © 2024 Coastal Academy Barbers. All rights reserved.
+    </div>
+<div class="flex gap-8">
+<a class="font-['Plus_Jakarta_Sans'] text-sm text-stone-500 hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>
+<a class="font-['Plus_Jakarta_Sans'] text-sm text-stone-500 hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
+<a class="font-['Plus_Jakarta_Sans'] text-sm text-stone-500 hover:underline opacity-80 hover:opacity-100 transition-opacity" href="#">Campus Map</a>
+</div>
+</footer>
+</body></html>

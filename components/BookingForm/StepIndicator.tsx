@@ -10,7 +10,7 @@ const STEPS = [
 
 export default function StepIndicator({ currentStep }: Props) {
   return (
-    <div className="flex items-center justify-center gap-0 mb-10">
+    <div className="flex items-center justify-center gap-0 mb-6">
       {STEPS.map(({ n, label }, i) => {
         const done   = currentStep > n;
         const active = currentStep === n;
@@ -21,7 +21,7 @@ export default function StepIndicator({ currentStep }: Props) {
             {i > 0 && (
               <div
                 className={`h-px w-12 sm:w-20 transition-colors duration-300 ${
-                  done || active ? 'bg-brand-500' : 'bg-zinc-700'
+                  done || active ? 'bg-brand-500' : 'bg-gray-200'
                 }`}
               />
             )}
@@ -33,8 +33,8 @@ export default function StepIndicator({ currentStep }: Props) {
                   done
                     ? 'border-brand-500 bg-brand-500 text-white'
                     : active
-                    ? 'border-brand-500 bg-brand-950 text-brand-400'
-                    : 'border-zinc-700 bg-zinc-900 text-zinc-600'
+                    ? 'border-brand-500 bg-brand-50 text-brand-600'
+                    : 'border-gray-200 bg-white text-gray-400'
                 }`}
               >
                 {done ? (
@@ -48,7 +48,7 @@ export default function StepIndicator({ currentStep }: Props) {
               {/* label */}
               <span
                 className={`text-xs font-semibold uppercase tracking-widest transition-colors ${
-                  active ? 'text-brand-400' : done ? 'text-brand-600' : 'text-zinc-600'
+                  active ? 'text-brand-600' : done ? 'text-brand-500' : 'text-gray-400'
                 }`}
               >
                 {label}

@@ -5,9 +5,9 @@ import { Appointment, AppointmentStatus } from '@/types';
 import { fetchAllAppointments, adminUpdateAppointmentStatus } from '@/lib/admin';
 
 const STATUS_STYLES: Record<AppointmentStatus, string> = {
-  [AppointmentStatus.Pending]:   'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  [AppointmentStatus.Confirmed]: 'bg-green-500/10 text-green-400 border-green-500/30',
-  [AppointmentStatus.Cancelled]: 'bg-zinc-700/40 text-zinc-500 border-zinc-700',
+  [AppointmentStatus.Pending]:   'bg-amber-50 text-amber-700 border-amber-200',
+  [AppointmentStatus.Confirmed]: 'bg-green-50 text-green-700 border-green-200',
+  [AppointmentStatus.Cancelled]: 'bg-gray-100 text-gray-400 border-gray-200',
 };
 
 type Filter = 'all' | AppointmentStatus;
@@ -63,14 +63,14 @@ export default function AllAppointments() {
   return (
     <div>
       <div className="mb-5">
-        <h2 className="text-lg font-bold text-white">All Appointments</h2>
-        <p className="text-xs text-zinc-500 mt-0.5">
+        <h2 className="text-lg font-bold text-gray-900">All Appointments</h2>
+        <p className="text-xs text-gray-400 mt-0.5">
           Full booking history across all customers and barbers.
         </p>
       </div>
 
       {error && (
-        <p className="mb-4 rounded-lg border border-red-900 bg-red-950/40 px-4 py-2 text-sm text-red-400">
+        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -79,7 +79,7 @@ export default function AllAppointments() {
       <div className="flex gap-2 flex-wrap mb-5">
         {(
           [
-            { key: 'all',       label: `All (${counts.all})` },
+            { key: 'all',                         label: `All (${counts.all})` },
             { key: AppointmentStatus.Pending,   label: `Pending (${counts.pending})` },
             { key: AppointmentStatus.Confirmed, label: `Confirmed (${counts.confirmed})` },
             { key: AppointmentStatus.Cancelled, label: `Cancelled (${counts.cancelled})` },
@@ -90,8 +90,8 @@ export default function AllAppointments() {
             onClick={() => setFilter(key)}
             className={`rounded-full border px-4 py-1.5 text-xs font-bold transition ${
               filter === key
-                ? 'border-brand-500 bg-brand-500/10 text-brand-400'
-                : 'border-zinc-700 text-zinc-500 hover:text-zinc-300'
+                ? 'border-ocean-400 bg-ocean-50 text-ocean-600'
+                : 'border-gray-200 text-gray-500 hover:text-gray-700'
             }`}
           >
             {label}
@@ -100,36 +100,36 @@ export default function AllAppointments() {
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-zinc-600">Loading…</div>
+        <div className="py-8 text-center text-sm text-gray-400">Loading…</div>
       ) : shown.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-zinc-800 py-12 text-center text-sm text-zinc-600">
+        <div className="rounded-xl border border-dashed border-gray-200 py-12 text-center text-sm text-gray-400">
           No appointments found.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-gray-200">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 bg-zinc-900/60">
+              <tr className="border-b border-gray-100 bg-gray-50">
                 {['Customer', 'Barber', 'Service', 'Time', 'Status', 'Actions'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-zinc-500">
+                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-400">
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800 bg-zinc-900">
+            <tbody className="divide-y divide-gray-100 bg-white">
               {shown.map((appt) => (
-                <tr key={appt.id} className="transition hover:bg-zinc-800/40">
-                  <td className="px-4 py-3 font-medium text-white">
+                <tr key={appt.id} className="transition hover:bg-gray-50">
+                  <td className="px-4 py-3 font-medium text-gray-900">
                     {appt.customer?.full_name ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-zinc-400">
+                  <td className="px-4 py-3 text-gray-600">
                     {(appt as Appointment & { _barberName?: string })._barberName ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-zinc-400">
+                  <td className="px-4 py-3 text-gray-600">
                     {appt.service?.name ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-zinc-400 whitespace-nowrap">
+                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                     {fmt(appt.start_time)}
                   </td>
                   <td className="px-4 py-3">
@@ -143,7 +143,7 @@ export default function AllAppointments() {
                         <button
                           disabled={busyId === appt.id}
                           onClick={() => handleStatus(appt.id, AppointmentStatus.Confirmed)}
-                          className="rounded border border-green-800 px-2 py-0.5 text-xs text-green-400 hover:bg-green-950/40 disabled:opacity-40 transition"
+                          className="rounded border border-green-200 px-2 py-0.5 text-xs text-green-700 hover:bg-green-50 disabled:opacity-40 transition"
                         >
                           Confirm
                         </button>
@@ -152,7 +152,7 @@ export default function AllAppointments() {
                         <button
                           disabled={busyId === appt.id}
                           onClick={() => handleStatus(appt.id, AppointmentStatus.Cancelled)}
-                          className="rounded border border-zinc-700 px-2 py-0.5 text-xs text-zinc-400 hover:text-white disabled:opacity-40 transition"
+                          className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-600 hover:text-gray-900 disabled:opacity-40 transition"
                         >
                           Cancel
                         </button>

@@ -23,8 +23,8 @@ type DayKey = typeof DAYS[number]['key'];
 
 interface DayState {
   enabled: boolean;
-  open:  string; // "HH:MM"
-  close: string; // "HH:MM"
+  open:  string;
+  close: string;
 }
 
 function initFromHours(
@@ -48,7 +48,6 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
   const [saved,  setSaved]  = useState(false);
   const [error,  setError]  = useState<string | null>(null);
 
-  // Re-init if the barber prop changes (e.g. after a refresh)
   useEffect(() => {
     setDays(initFromHours(barber.available_hours));
   }, [barber.id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -91,8 +90,8 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
               key={key}
               className={`flex flex-wrap items-center gap-4 rounded-xl border px-5 py-4 transition-colors ${
                 day.enabled
-                  ? 'border-zinc-700 bg-zinc-900'
-                  : 'border-zinc-800 bg-zinc-900/50'
+                  ? 'border-ocean-200 bg-ocean-50'
+                  : 'border-gray-200 bg-white'
               }`}
             >
               {/* day toggle */}
@@ -101,11 +100,11 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
                   type="checkbox"
                   checked={day.enabled}
                   onChange={(e) => toggle(key, e.target.checked)}
-                  className="h-4 w-4 rounded border-zinc-600 bg-zinc-800 accent-brand-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-gray-300 accent-ocean-600 cursor-pointer"
                 />
                 <span
                   className={`text-sm font-semibold ${
-                    day.enabled ? 'text-white' : 'text-zinc-600'
+                    day.enabled ? 'text-gray-900' : 'text-gray-400'
                   }`}
                 >
                   {label}
@@ -119,18 +118,18 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
                     type="time"
                     value={day.open}
                     onChange={(e) => setTime(key, 'open', e.target.value)}
-                    className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-white outline-none focus:border-brand-500 [color-scheme:dark]"
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 outline-none focus:border-ocean-500"
                   />
-                  <span className="text-zinc-600 text-sm">to</span>
+                  <span className="text-gray-400 text-sm">to</span>
                   <input
                     type="time"
                     value={day.close}
                     onChange={(e) => setTime(key, 'close', e.target.value)}
-                    className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-white outline-none focus:border-brand-500 [color-scheme:dark]"
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-900 outline-none focus:border-ocean-500"
                   />
                 </div>
               ) : (
-                <span className="text-xs text-zinc-700 uppercase tracking-wider font-medium">
+                <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
                   Day off
                 </span>
               )}
@@ -140,7 +139,7 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
       </div>
 
       {error && (
-        <p className="mt-4 text-sm text-red-400">{error}</p>
+        <p className="mt-4 text-sm text-red-600">{error}</p>
       )}
 
       <div className="mt-6 flex items-center gap-4">
@@ -148,7 +147,7 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="rounded-xl bg-brand-500 px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-brand-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="rounded-xl bg-brand-500 px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {saving && (
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -157,7 +156,7 @@ export default function AvailabilityForm({ barber, onSaved }: Props) {
         </button>
 
         {saved && (
-          <span className="text-sm text-green-400 font-medium">
+          <span className="text-sm text-green-600 font-medium">
             ✓ Saved
           </span>
         )}

@@ -5,15 +5,14 @@ interface Props {
 }
 
 const STATUS_BLOCK: Record<AppointmentStatus, string> = {
-  [AppointmentStatus.Pending]:   'bg-amber-500/20 border-l-2 border-amber-500 text-amber-300',
-  [AppointmentStatus.Confirmed]: 'bg-green-500/20 border-l-2 border-green-500 text-green-300',
-  [AppointmentStatus.Cancelled]: 'bg-zinc-800/60 border-l-2 border-zinc-600 text-zinc-500 line-through',
+  [AppointmentStatus.Pending]:   'bg-amber-50 border-l-2 border-amber-400 text-amber-700',
+  [AppointmentStatus.Confirmed]: 'bg-green-50 border-l-2 border-green-500 text-green-700',
+  [AppointmentStatus.Cancelled]: 'bg-gray-100 border-l-2 border-gray-300 text-gray-400 line-through',
 };
 
-// Returns the Monday of the week containing `date`
 function weekStart(date: Date): Date {
   const d = new Date(date);
-  const day = d.getDay(); // 0=Sun
+  const day = d.getDay();
   const diff = day === 0 ? -6 : 1 - day;
   d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
@@ -43,33 +42,33 @@ function formatTime(iso: string) {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default function CalendarView({ appointments }: Props) {
-  const today = new Date();
+  const today  = new Date();
   const monday = weekStart(today);
-  const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+  const days   = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
 
   return (
     <div className="overflow-x-auto -mx-1">
-      <div className="min-w-[560px] grid grid-cols-7 gap-px bg-zinc-800 rounded-xl overflow-hidden border border-zinc-800">
+      <div className="min-w-[560px] grid grid-cols-7 gap-px bg-gray-200 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
         {days.map((day, i) => {
           const isToday  = sameDay(day, today);
           const dayAppts = appointments.filter((a) =>
-            sameDay(new Date(a.start_time), day)
+            sameDay(new Date(a.start_time), day),
           );
 
           return (
-            <div key={i} className="bg-zinc-900 flex flex-col min-h-[180px]">
+            <div key={i} className="bg-white flex flex-col min-h-[180px]">
               {/* column header */}
               <div
-                className={`flex flex-col items-center py-2.5 border-b border-zinc-800 ${
-                  isToday ? 'bg-brand-500/10' : ''
+                className={`flex flex-col items-center py-2.5 border-b border-gray-100 ${
+                  isToday ? 'bg-ocean-50' : ''
                 }`}
               >
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
                   {DAY_LABELS[i]}
                 </span>
                 <span
                   className={`mt-0.5 text-sm font-bold ${
-                    isToday ? 'text-brand-400' : 'text-zinc-300'
+                    isToday ? 'text-ocean-600' : 'text-gray-700'
                   }`}
                 >
                   {day.getDate()}
@@ -79,7 +78,7 @@ export default function CalendarView({ appointments }: Props) {
               {/* appointment blocks */}
               <div className="flex flex-col gap-1 p-1.5 flex-1">
                 {dayAppts.length === 0 && (
-                  <span className="text-[10px] text-zinc-700 text-center mt-2">—</span>
+                  <span className="text-[10px] text-gray-300 text-center mt-2">—</span>
                 )}
                 {dayAppts.map((appt) => (
                   <div

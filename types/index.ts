@@ -44,7 +44,10 @@ export interface TimeSlot {
 
 export interface Appointment {
   id: string;
-  customer_id: string;
+  customer_id: string | null;
+  guest_name: string | null;
+  guest_phone: string | null;
+  guest_email: string | null;
   barber_id: string;
   service_id: string;
   start_time: string;  // ISO 8601
