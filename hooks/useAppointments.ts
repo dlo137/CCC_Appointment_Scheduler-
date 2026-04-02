@@ -6,7 +6,7 @@ import { Appointment } from '@/types';
 
 function mapRow(row: Record<string, unknown>): Appointment {
   return {
-    ...(row as Appointment),
+    ...(row as unknown as Appointment),
     service: row.service
       ? {
           id:               (row.service as Record<string, unknown>).id as string,
