@@ -64,7 +64,7 @@ export async function fetchBarbers(): Promise<Barber[]> {
 
   return (data ?? []).map((row) => {
     // Supabase returns the joined row under the related table name
-    const profile = row.profiles as { full_name: string | null } | null;
+    const profile = row.profiles as unknown as { full_name: string | null } | null;
     return {
       id: row.id,
       profile_id: row.profile_id,
