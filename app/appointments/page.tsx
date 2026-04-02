@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/hooks/useAuth';
@@ -351,7 +351,9 @@ function AppointmentsContent() {
 export default function AppointmentsPage() {
   return (
     <ProtectedRoute>
-      <AppointmentsContent />
+      <Suspense>
+        <AppointmentsContent />
+      </Suspense>
     </ProtectedRoute>
   );
 }
