@@ -102,7 +102,7 @@ export async function fetchCustomerAppointments(
         }
       : undefined,
     _barberName:
-      (row.barber_rel?.profiles as { full_name: string | null } | null)
+      (row.barber_rel?.profiles as unknown as { full_name: string | null } | null)
         ?.full_name ?? 'Barber',
   })) as (Appointment & { _barberName: string })[];
 }

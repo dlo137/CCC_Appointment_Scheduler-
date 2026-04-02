@@ -12,7 +12,7 @@ export async function fetchBarberByProfileId(
 
   if (error) return null;
 
-  const profile = data.profiles as { full_name: string | null } | null;
+  const profile = data.profiles as unknown as { full_name: string | null } | null;
   return {
     id:              data.id,
     profile_id:      data.profile_id,

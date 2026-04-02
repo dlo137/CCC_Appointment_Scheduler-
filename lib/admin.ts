@@ -136,7 +136,7 @@ export async function fetchAllAppointments(): Promise<Appointment[]> {
         }
       : undefined,
     // Flatten barber name for display
-    _barberName: (row.barber_profile?.profiles as { full_name: string | null } | null)?.full_name ?? 'Barber',
+    _barberName: (row.barber_profile?.profiles as unknown as { full_name: string | null } | null)?.full_name ?? 'Barber',
   })) as (Appointment & { _barberName: string })[];
 }
 
