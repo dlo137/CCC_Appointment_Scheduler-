@@ -4,7 +4,10 @@
       "Bash(npm install:*)",
       "Bash(timeout:*)",
       "Bash(git remote:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
