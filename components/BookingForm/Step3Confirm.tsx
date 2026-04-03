@@ -74,14 +74,14 @@ export default function Step3Confirm({
         </p>
       </section>
 
-      {/* Main 2-column layout */}
-      <div className="grid grid-cols-5 gap-6 items-start">
+      {/* Main 2-column layout — stacks on mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-start">
 
         {/* ── Left: Invoice document (3/5) ── */}
-        <div className="col-span-3 bg-surface-container-lowest rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
+        <div className="col-span-1 md:col-span-3 bg-surface-container-lowest rounded-2xl border border-outline-variant overflow-hidden shadow-sm">
 
           {/* Invoice header */}
-          <div className="bg-primary px-8 py-6 flex items-start justify-between">
+          <div className="bg-primary px-5 sm:px-8 py-6 flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <span className="material-symbols-outlined text-on-primary text-2xl">content_cut</span>
@@ -162,7 +162,7 @@ export default function Step3Confirm({
         </div>
 
         {/* ── Right: Contact + Actions (2/5) ── */}
-        <div className="col-span-2 flex flex-col gap-4">
+        <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
 
           {/* Contact info — guests only */}
           {isGuest && (

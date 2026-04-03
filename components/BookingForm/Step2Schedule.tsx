@@ -92,7 +92,7 @@ export default function Step2Schedule({
   const dateOptions = buildDateOptions(21);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col sm:flex-1 sm:min-h-0">
 
       {/* Header */}
       <section className="text-center mb-6">
@@ -104,15 +104,15 @@ export default function Step2Schedule({
         </p>
       </section>
 
-      {/* 3-column grid */}
-      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0">
+      {/* 3-column grid — stacks on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:flex-1 sm:min-h-0">
 
         {/* ── Column 1: Barber ── */}
-        <div className="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+        <div className="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden sm:overflow-hidden">
           <div className="px-5 py-4 border-b border-outline-variant shrink-0">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Barber</p>
           </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          <div className="sm:flex-1 sm:overflow-y-auto p-3 space-y-2">
             {/* Any available */}
             <BarberRow
               name="Any Available"
@@ -139,7 +139,7 @@ export default function Step2Schedule({
           <div className="px-5 py-4 border-b border-outline-variant shrink-0">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Date</p>
           </div>
-          <div className="flex-1 overflow-y-auto p-3">
+          <div className="sm:flex-1 sm:overflow-y-auto p-3">
             <div className="grid grid-cols-3 gap-2">
               {dateOptions.map((d) => {
                 const isSelected = selectedDate === d.value;
@@ -170,7 +170,7 @@ export default function Step2Schedule({
           <div className="px-5 py-4 border-b border-outline-variant shrink-0">
             <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Available times</p>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="sm:flex-1 sm:overflow-y-auto p-4">
             {loadingSlots && (
               <div className="flex items-center gap-2 text-on-surface-variant text-sm">
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />

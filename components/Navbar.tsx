@@ -25,17 +25,17 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition-colors"
+          className="text-base sm:text-xl font-bold tracking-tight text-gray-900 hover:text-gray-700 transition-colors shrink-0"
         >
           CCC Barber Academy
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 sm:gap-6">
           {customerLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="text-sm font-medium text-gray-600 hover:text-ocean-600 transition-colors"
+              className="whitespace-nowrap text-sm font-medium text-gray-600 hover:text-ocean-600 transition-colors"
             >
               {label}
             </Link>
