@@ -1,20 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } },
-);
+// Service-role client — initialised lazily so the module loads during static export
+function getAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+}
 
 async function verifyAdmin(req: NextRequest) {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '');
   if (!token) return null;
 
-  const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+  const admin = getAdmin();
+  const { data: { user } } = await admin.auth.getUser(token);
   if (!user) return null;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -27,11 +31,13 @@ type Params = Promise<{ id: string }>;
 
 // ── PATCH /api/admin/users/[id] — update profile + handle role changes ────────
 export async function PATCH(req: NextRequest, { params }: { params: Params }) {
-  const admin = await verifyAdmin(req);
-  if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminUser = await verifyAdmin(req);
+  if (!adminUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await params;
   const { full_name, phone, role, bio, available_hours } = await req.json();
+
+  const supabaseAdmin = getAdmin();
 
   // Fetch current role to detect changes
   const { data: current } = await supabaseAdmin
@@ -79,16 +85,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
 
 // ── DELETE /api/admin/users/[id] — permanently remove user ───────────────────
 export async function DELETE(req: NextRequest, { params }: { params: Params }) {
-  const admin = await verifyAdmin(req);
-  if (!admin) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const adminUser = await verifyAdmin(req);
+  if (!adminUser) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await params;
 
-  if (id === admin.id) {
+  if (id === adminUser.id) {
     return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 });
   }
 
-  const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+  const { error } = await getAdmin().auth.admin.deleteUser(id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

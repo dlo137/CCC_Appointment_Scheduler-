@@ -1,22 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Service-role client — never exposed to the browser
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } },
-);
+// Service-role client — initialised lazily so the module loads during static export
+function getAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+}
 
 // ── auth guard ────────────────────────────────────────────────────────────────
 async function verifyAdmin(req: NextRequest) {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '');
   if (!token) return null;
 
-  const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+  const admin = getAdmin();
+  const { data: { user } } = await admin.auth.getUser(token);
   if (!user) return null;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -38,6 +41,8 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
+
+  const supabaseAdmin = getAdmin();
 
   // 1. Create the auth user (email_confirm: true skips the verification email)
   const { data: { user }, error: createError } = await supabaseAdmin.auth.admin.createUser({
